@@ -1,0 +1,57 @@
+Q1.	 Design and implement a database for a college registration system.
+Requirements Given:
+Create tables: STUDENT, COURSE, ENROLLMENT.
+Use appropriate constraints:
+STUDENT → student_id (Primary Key), email (Unique), age (Check ≥ 18)
+COURSE → course_id (Primary Key)
+ENROLLMENT → Foreign keys referencing STUDENT and COURSE
+1.	Create a VIEW to display student names with their enrolled course titles.
+2.	Create an INDEX on COURSE.course_name for faster searching.
+3.	Create a SEQUENCE to auto-generate student_id.
+4.	Create a SYNONYM for the STUDENT table as STUD.
+CODE =- 
+CREATE DATABASE College;
+USE College;
+
+CREATE TABLE STUDENT (
+  student_id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(50),
+  email VARCHAR(50) UNIQUE,
+  age INT CHECK (age >= 18)
+);
+
+CREATE TABLE COURSE (
+  course_id INT AUTO_INCREMENT PRIMARY KEY,
+  course_name VARCHAR(50)
+);
+
+CREATE TABLE ENROLLMENT (
+  enroll_id INT AUTO_INCREMENT PRIMARY KEY,
+  student_id INT,
+  course_id INT,
+  FOREIGN KEY (student_id) REFERENCES STUDENT(student_id),
+  FOREIGN KEY (course_id) REFERENCES COURSE(course_id)
+);
+
+INSERT INTO STUDENT (name, email, age) VALUES
+('Amit', 'amit@gmail.com', 20),
+('Sneha', 'sneha@gmail.com', 19);
+
+INSERT INTO COURSE (course_name) VALUES
+('DBMS'), ('OS'), ('CN');
+
+INSERT INTO ENROLLMENT (student_id, course_id) VALUES
+(1, 1), (2, 2);
+
+CREATE VIEW student_course_view AS
+SELECT s.name AS Student_Name, c.course_name AS Course_Name
+FROM STUDENT s
+JOIN ENROLLMENT e ON s.student_id = e.student_id
+JOIN COURSE c ON e.course_id = c.course_id;
+
+CREATE INDEX idx_course_name ON COURSE(course_name);
+CREATE VIEW STUD AS SELECT * FROM STUDENT;
+
+SELECT * FROM student_course_view;
+SELECT * FROM STUD;
+
